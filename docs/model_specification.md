@@ -25,8 +25,8 @@ decision rule.
 
 ## 2. Sets and Indices
 
-- \(i \in \mathcal{I}\): products, with \(|\mathcal{I}| = 25\)
-- \(t \in \mathcal{T}\): planning days, with \(|\mathcal{T}| = 7\)
+- $i \in \mathcal{I}$: products, with $|\mathcal{I}| = 25$
+- $t \in \mathcal{T}$: planning days, with $|\mathcal{T}| = 7$
 
 The planning horizon covers July 14–20, 2025.
 
@@ -34,11 +34,11 @@ The planning horizon covers July 14–20, 2025.
 
 Let
 
-\[
+$$
 d_{it} \ge 0
-\]
+$$
 
-denote the forecast demand for product \(i\) on day \(t\).
+denote the forecast demand for product $i$ on day $t$.
 
 These demand values are generated in `02_demand_analysis.ipynb` using the
 four-week weekday-mean forecasting rule selected through leakage-free
@@ -50,43 +50,43 @@ Demand is treated as deterministic within each optimization scenario.
 
 ## 4. Decision Variables
 
-For each product \(i\) and day \(t\):
+For each product $i$ and day $t$:
 
-\[
+$$
 x_{it} \ge 0
-\]
+$$
 
-is the replenishment quantity arriving at the beginning of day \(t\),
+is the replenishment quantity arriving at the beginning of day $t$,
 
-\[
+$$
 s_{it} \ge 0
-\]
+$$
 
-is fulfilled demand during day \(t\), and
+is fulfilled demand during day $t$, and
 
-\[
+$$
 I_{it} \ge 0
-\]
+$$
 
 is usable end-of-day inventory.
 
 The Stage 2 fairness model additionally introduces
 
-\[
+$$
 0 \le z \le 1,
-\]
+$$
 
-where \(z\) is the minimum weekly product-level fill rate guaranteed across
+where $z$ is the minimum weekly product-level fill rate guaranteed across
 the portfolio.
 
 ## 5. Scenario Parameters
 
 The optimization uses the following planning parameters:
 
-- \(\alpha \in [0,1]\): fraction of end-of-day inventory remaining usable on
+- $\alpha \in [0,1]$: fraction of end-of-day inventory remaining usable on
   the following day;
-- \(R_t \ge 0\): total replenishment capacity available on day \(t\);
-- \(I_{i0} \ge 0\): usable initial inventory for product \(i\).
+- $R_t \ge 0$: total replenishment capacity available on day $t$;
+- $I_{i0} \ge 0$: usable initial inventory for product $i$.
 
 The dataset does not directly identify these quantities. They are therefore
 specified transparently and varied through sensitivity analysis.
@@ -112,7 +112,7 @@ the retailer's actual replenishment capacity.
 
 Inventory-carryover scenarios are:
 
-| Scenario | \(\alpha\) |
+| Scenario | $\alpha$ |
 |---|---:|
 | High perishability | 0.60 |
 | Base | 0.80 |
@@ -120,35 +120,35 @@ Inventory-carryover scenarios are:
 
 The base planning experiment therefore uses
 
-\[
+$$
 R_t = 56.867736
 \qquad
 \text{for all } t,
-\]
+$$
 
-\[
+$$
 \alpha = 0.80,
-\]
+$$
 
 and
 
-\[
+$$
 I_{i0} = 0
 \qquad
 \text{for all } i.
-\]
+$$
 
 The zero-initial-inventory condition is a planning assumption rather than a
 claim about the retailer's actual inventory position.
 
 ## 7. Inventory Dynamics
 
-Replenishment \(x_{it}\) is assumed to arrive at the beginning of day \(t\)
+Replenishment $x_{it}$ is assumed to arrive at the beginning of day $t$
 and is therefore available to satisfy demand on that day.
 
 For the first planning day,
 
-\[
+$$
 I_{i1}
 =
 I_{i0}
@@ -156,11 +156,11 @@ I_{i0}
 x_{i1}
 -
 s_{i1}.
-\]
+$$
 
 For subsequent days,
 
-\[
+$$
 I_{it}
 =
 \alpha I_{i,t-1}
@@ -170,16 +170,16 @@ x_{it}
 s_{it},
 \qquad
 t=2,\ldots,T.
-\]
+$$
 
-The carryover factor \(\alpha\) represents the fraction of previous
+The carryover factor $\alpha$ represents the fraction of previous
 end-of-day inventory that remains usable on the following day.
 
 ## 8. Demand-Fulfillment Constraints
 
 Fulfilled demand cannot exceed forecast demand:
 
-\[
+$$
 0
 \le
 s_{it}
@@ -187,7 +187,7 @@ s_{it}
 d_{it},
 \qquad
 \forall i,t.
-\]
+$$
 
 No backlogging is allowed. Unfulfilled demand on one day is not transferred
 to later days.
@@ -196,14 +196,14 @@ to later days.
 
 Total replenishment on each day cannot exceed the daily planning capacity:
 
-\[
+$$
 \sum_{i \in \mathcal{I}}
 x_{it}
 \le
 R_t,
 \qquad
 \forall t.
-\]
+$$
 
 This shared constraint creates competition for replenishment capacity across
 products and links the allocation problem to the intertemporal inventory
@@ -213,14 +213,14 @@ dynamics.
 
 The first optimization stage maximizes total fulfilled demand:
 
-\[
+$$
 S^*
 =
 \max
 \sum_{i \in \mathcal{I}}
 \sum_{t \in \mathcal{T}}
 s_{it},
-\]
+$$
 
 subject to the inventory-balance, demand, capacity, and nonnegativity
 constraints.
@@ -229,64 +229,64 @@ This objective identifies the maximum aggregate service level achievable
 under the planning scenario.
 
 Because the objective depends only on aggregate fulfilled demand, multiple
-product-level allocations may attain the same value \(S^*\).
+product-level allocations may attain the same value $S^*$.
 
 ## 11. Stage 2: Max-Min Product Fairness
 
-Define weekly forecast demand for product \(i\) as
+Define weekly forecast demand for product $i$ as
 
-\[
+$$
 D_i
 =
 \sum_{t \in \mathcal{T}}
 d_{it}.
-\]
+$$
 
 The second stage preserves the Stage 1 optimum:
 
-\[
+$$
 \sum_{i \in \mathcal{I}}
 \sum_{t \in \mathcal{T}}
 s_{it}
 =
 S^*.
-\]
+$$
 
 For every product,
 
-\[
+$$
 \sum_{t \in \mathcal{T}}
 s_{it}
 \ge
 z D_i.
-\]
+$$
 
 The Stage 2 objective is
 
-\[
+$$
 z^*
 =
 \max z.
-\]
+$$
 
 Because
 
-\[
+$$
 z
 \le
 \frac{\sum_t s_{it}}{\sum_t d_{it}}
-\]
+$$
 
-for every product, maximizing \(z\) maximizes the minimum weekly product-level
+for every product, maximizing $z$ maximizes the minimum weekly product-level
 fill rate.
 
 The final decision rule therefore follows the lexicographic priority
 
-\[
+$$
 \text{maximum aggregate service}
 \;\longrightarrow\;
 \text{maximum minimum product service}.
-\]
+$$
 
 Aggregate efficiency is never sacrificed to improve fairness.
 
@@ -294,23 +294,23 @@ Aggregate efficiency is never sacrificed to improve fairness.
 
 A candidate third objective was evaluated after fixing both
 
-\[
+$$
 \sum_{i,t}s_{it}=S^*
-\]
+$$
 
 and
 
-\[
+$$
 z=z^*.
-\]
+$$
 
 The proposed tie-breaker was
 
-\[
+$$
 \min
 \sum_{i,t}
 I_{it}.
-\]
+$$
 
 Under the base scenario, this objective did not reduce aggregate carried
 inventory.
@@ -318,7 +318,7 @@ inventory.
 Summing the inventory-balance equations across all products and planning days
 gives
 
-\[
+$$
 \sum_i\sum_t x_{it}
 =
 \sum_i\sum_t s_{it}
@@ -330,7 +330,7 @@ I_{it}
 \sum_i I_{iT}
 -
 \sum_i I_{i0}.
-\]
+$$
 
 In the base solution, all seven daily replenishment-capacity constraints are
 binding, so aggregate replenishment is fixed. Aggregate service is also fixed
@@ -349,14 +349,14 @@ Capacity sensitivity is analyzed using the Stage 1 maximum-service model.
 
 For the constraint
 
-\[
+$$
 \sum_i x_{it}
 \le
 R_t,
-\]
+$$
 
 the capacity shadow value measures the local change in maximum fulfilled
-demand associated with a small increase in \(R_t\).
+demand associated with a small increase in $R_t$.
 
 Because the numerical solver minimizes the negative Stage 1 service objective,
 the reported service shadow value is the negative of the solver marginal.
@@ -392,17 +392,17 @@ solver-selected allocations.
 The optimized multi-period plan is compared with a proportional same-day
 replenishment policy.
 
-For day \(t\), define total forecast demand as
+For day $t$, define total forecast demand as
 
-\[
+$$
 D_t
 =
 \sum_i d_{it}.
-\]
+$$
 
 The myopic allocation factor is
 
-\[
+$$
 q_t
 =
 \min
@@ -410,15 +410,15 @@ q_t
 1,
 \frac{R_t}{D_t}
 \right).
-\]
+$$
 
 The benchmark fulfills
 
-\[
+$$
 s^{\text{myopic}}_{it}
 =
 q_t d_{it}.
-\]
+$$
 
 The policy therefore allocates capacity proportionally across current-day
 demand but does not build inventory in anticipation of future demand.
