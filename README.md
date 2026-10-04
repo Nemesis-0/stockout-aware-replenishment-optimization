@@ -67,6 +67,16 @@ forecast achieved approximately **26.8% WAPE**.
 Across all 175 holdout observations, evaluation against the stockout-aware
 recovered-demand proxy produced approximately **26.6% WAPE**.
 
+A post-hoc exploratory extension subsequently compared the fixed four-week
+weekday-mean benchmark with Random Forest and XGBoost under the same
+leakage-free rolling-origin development evaluation. Aggregate validation WAPE
+was **31.91%** for the four-week weekday mean, **29.43%** for Random Forest,
+and **29.15%** for XGBoost. Because these models were developed only after the
+original forecasting and final-holdout analyses had been examined, the
+extension is treated as exploratory: the final holdout was not reused for
+model selection, and the original fixed forecast remains the input to the
+optimization analysis.
+
 The final forecasting model generates **175 demand inputs: 25 products × 7
 days**.
 
@@ -374,7 +384,10 @@ demand.
 
 It then performs leakage-free rolling-origin forecast validation, fixes the
 four-week weekday-mean forecasting rule, evaluates the untouched final
-holdout, and generates the 175 final optimization demand inputs.
+holdout, and generates the 175 final optimization demand inputs. A clearly
+separated post-hoc exploratory extension compares Random Forest and XGBoost
+with the original forecasting benchmark on the development rolling-origin
+folds without reusing the final holdout for model selection.
 
 ### `03_optimization.ipynb`
 
